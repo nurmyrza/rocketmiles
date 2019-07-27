@@ -36,6 +36,7 @@ public class SearchStepDef {
 
     @When("^User search hotels in \"([^\"]*)\" for July 30, 2019 - July 31, 2019 with one guest")
     public void user_search_hotels_in_for(String city) throws InterruptedException {
+        LOGGER.info("Starting to search hotels in Chicago, IL fo July 30 - 31, 2019");
         closeDateGuestRoom();
         rocketmilesPage.cityHotelInput.sendKeys(city);
         rocketmilesPage.cityChicago.click();
@@ -49,25 +50,34 @@ public class SearchStepDef {
     @Then("^User get available hotels at given date range \"([^\"]*)\" in \"([^\"]*)\" with \"([^\"]*)\" reward$")
     public void user_get_available_hotels_at_given_date_range_in_with_reward(String expRangeDate, String expCity, String expRewardProgram) {
         rocketmilesPage.searchButton.click();
-        Assert.assertEquals(expRangeDate, searchResultPage.rangeDate.getText());
-        Assert.assertTrue(searchResultPage.validateCity.getText().contains(expCity));
-        Assert.assertTrue(searchResultPage.validateRewardProgram.getText().contains(expRewardProgram));
+        Assert.assertEquals("Range Date failure", expRangeDate, searchResultPage.rangeDate.getText());
+        Assert.assertTrue("City validation failure", searchResultPage.validateCity.getText().contains(expCity));
+        Assert.assertTrue("Reward validattion failure", searchResultPage.validateRewardProgram.getText().contains(expRewardProgram));
     }
 
-    @Then("^All listed hotels are in Chicago, IL area$")
-    public void all_listed_hotels_are_in_Chicago_IL_area() {
+    @Then("^All listed hotels are in \"([^\"]*)\" area$")
+    public void all_listed_hotels_are_in_area(String city) throws InterruptedException {
+        LOGGER.info("Starting hotel list verification");
+        closeDateGuestRoom();
+        rocketmilesPage.cityHotelInput.sendKeys(city);
+        rocketmilesPage.cityChicago.click();
+        rocketmilesPage.rewardInput.sendKeys("United MileagePlus" + Keys.DOWN + Keys.ENTER);
+        rocketmilesPage.searchButton.click();
+
 
     }
 
     @When("^User search hotels but with hotel box empty$")
     public void user_search_hotels_but_with_hotel_box_empty() throws InterruptedException {
+        LOGGER.info("Starting validation with empty hotel");
         closeDateGuestRoom();
-        rocketmilesPage.rewardInput.sendKeys("United MileagePlus" + Keys.DOWN + Keys.ENTER);
+        rocketmilesPage.rewardInput.sendKeys("Aeroplan" + Keys.DOWN + Keys.ENTER);
         rocketmilesPage.searchButton.click();
     }
 
     @When("^User search hotels in \"([^\"]*)\" but with reward box empty$")
     public void user_search_hotels_in_but_with_reward_box_empty(String city) throws InterruptedException {
+        LOGGER.info("Starting to search with empty reward box");
         closeDateGuestRoom();
         rocketmilesPage.cityHotelInput.sendKeys(city);
         rocketmilesPage.cityChicago.click();
@@ -77,17 +87,18 @@ public class SearchStepDef {
     @Then("^User will get city box message$")
     public void user_will_get_city_box_message() {
         String expNoticeHotel = "Unknown location. Please type the city name again slowly and wait for the drop down options, or double-check the spelling.";
-        Assert.assertEquals(expNoticeHotel, rocketmilesPage.emptyHotelInputMessage.getText());
+        Assert.assertEquals("Hotel message verification failure",expNoticeHotel, rocketmilesPage.emptyHotelInputMessage.getText());
     }
 
     @Then("^User will get reward box message$")
     public void user_will_get_reward_box_message() {
         String expNoticeReward = "Reward program is required.";
-        Assert.assertEquals("", expNoticeReward, rocketmilesPage.emptyRewardInputMessage.getText());
+        Assert.assertEquals("Reward message failure", expNoticeReward, rocketmilesPage.emptyRewardInputMessage.getText());
     }
 
     @When("^User search with empty hotel and reward program$")
     public void user_search_with_empty_hotel_and_reward_program() throws InterruptedException {
+        LOGGER.info("Starting to search with both hotel and reward empty boxes");
         closeDateGuestRoom();
         rocketmilesPage.searchButton.click();
     }

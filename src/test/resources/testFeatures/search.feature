@@ -12,7 +12,7 @@ Feature: Validation of search functionality on Rocketmiles
   @positive
   Scenario: As a user I want to Search for a hotel at July 30, 2019 - July 31, 2019 with one guest in Chicago, IL
     When User search hotels in "Chicago, IL" for July 30, 2019 - July 31, 2019 with one guest
-    Then All listed hotels are in Chicago, IL area
+    Then All listed hotels are in "Chicago, IL" area
 
   @negative
   Scenario: Search with empty destination hotel
