@@ -14,14 +14,20 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.*;
 import utilities.Configuration;
 import utilities.Driver;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 
 import java.util.List;
+
 
 public class SearchStepDef {
     WebDriver driver = Driver.getDriver();
     RocketmilesPage rocketmilesPage = new RocketmilesPage();
     SearchResultPage searchResultPage = new SearchResultPage();
     WebDriverWait wait = new WebDriverWait(driver, 7);
+    static final Logger LOGGER = LogManager.getLogger(SearchStepDef.class);
+
 
     @Given("^User is on Rocketmiles website$")
     public void user_is_on_Rocketmiles_website() {
@@ -48,6 +54,11 @@ public class SearchStepDef {
         Assert.assertTrue(searchResultPage.validateRewardProgram.getText().contains(expRewardProgram));
     }
 
+    @Then("^All listed hotels are in Chicago, IL area$")
+    public void all_listed_hotels_are_in_Chicago_IL_area() {
+
+    }
+
     @When("^User search hotels but with hotel box empty$")
     public void user_search_hotels_but_with_hotel_box_empty() throws InterruptedException {
         closeDateGuestRoom();
@@ -72,7 +83,7 @@ public class SearchStepDef {
     @Then("^User will get reward box message$")
     public void user_will_get_reward_box_message() {
         String expNoticeReward = "Reward program is required.";
-        Assert.assertEquals(expNoticeReward, rocketmilesPage.emptyRewardInputMessage.getText());
+        Assert.assertEquals("", expNoticeReward, rocketmilesPage.emptyRewardInputMessage.getText());
     }
 
     @When("^User search with empty hotel and reward program$")
@@ -84,7 +95,7 @@ public class SearchStepDef {
     @Then("^User will get hotel box message$")
     public void user_will_get_hotel_box_message() {
         String expNoticeHotel = "Unknown location. Please type the city name again slowly and wait for the drop down options, or double-check the spelling.";
-        Assert.assertEquals(expNoticeHotel, rocketmilesPage.emptyHotelInputMessage.getText());
+        Assert.assertEquals("Empty hotel verification failure", expNoticeHotel, rocketmilesPage.emptyHotelInputMessage.getText());
     }
 
 
