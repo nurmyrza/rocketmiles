@@ -53,9 +53,6 @@ public class RocketmilesPage {
     @FindBy(xpath = "//input[@placeholder='Select reward program']")
     public WebElement rewardInput;
 
-//    @FindBy(xpath = "//button[@type='submit']//span[@class='ng-scope']")
-//    public WebElement searchButton;
-
     @FindBy(xpath = "//span[.='Search properties and earn rewards']")
     public WebElement searchButton;
 

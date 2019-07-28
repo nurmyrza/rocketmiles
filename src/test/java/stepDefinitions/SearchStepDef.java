@@ -11,6 +11,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.SourceType;
 import org.openqa.selenium.support.ui.*;
 import utilities.Configuration;
 import utilities.Driver;
@@ -18,8 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 
+import java.util.ArrayList;
 import java.util.List;
-
 
 public class SearchStepDef {
     WebDriver driver = Driver.getDriver();
@@ -27,7 +29,7 @@ public class SearchStepDef {
     SearchResultPage searchResultPage = new SearchResultPage();
     WebDriverWait wait = new WebDriverWait(driver, 7);
     static final Logger LOGGER = LogManager.getLogger(SearchStepDef.class);
-
+    Actions move = new Actions(driver);
 
     @Given("^User is on Rocketmiles website$")
     public void user_is_on_Rocketmiles_website() {
@@ -55,16 +57,29 @@ public class SearchStepDef {
         Assert.assertTrue("Reward validattion failure", searchResultPage.validateRewardProgram.getText().contains(expRewardProgram));
     }
 
-    @Then("^All listed hotels are in \"([^\"]*)\" area$")
-    public void all_listed_hotels_are_in_area(String city) throws InterruptedException {
+    @When("^User search hotels in \"([^\"]*)\" for July 30, 2019 - July 31, 2019$")
+    public void user_search_hotels_in_for_July_July(String city) throws InterruptedException {
         LOGGER.info("Starting hotel list verification");
         closeDateGuestRoom();
         rocketmilesPage.cityHotelInput.sendKeys(city);
         rocketmilesPage.cityChicago.click();
         rocketmilesPage.rewardInput.sendKeys("United MileagePlus" + Keys.DOWN + Keys.ENTER);
         rocketmilesPage.searchButton.click();
+    }
 
+    @When("^User select up to \"([^\"]*)\" with \"([^\"]*)\"$")
+    public void user_select_up_to_with(String maxPrice, String sliderPercentage) throws InterruptedException {
+        int sliderInt = Integer.parseInt(sliderPercentage);
+        wait.until(ExpectedConditions.elementToBeClickable(searchResultPage.slider));
+        slider(sliderInt);
+        Thread.sleep(6000);
+    }
 
+    @Then("^User will see only that up to \"([^\"]*)\" range$")
+    public void user_will_see_only_that_up_to_range(String arg1) {
+       LOGGER.info("Starting validation range price");
+        Assert.assertTrue("Not in that range",
+               isInThatRange(searchResultPage.minimumSlider, searchResultPage.maximumSlider, searchResultPage.listOfHotels));
     }
 
     @When("^User search hotels but with hotel box empty$")
@@ -87,7 +102,7 @@ public class SearchStepDef {
     @Then("^User will get city box message$")
     public void user_will_get_city_box_message() {
         String expNoticeHotel = "Unknown location. Please type the city name again slowly and wait for the drop down options, or double-check the spelling.";
-        Assert.assertEquals("Hotel message verification failure",expNoticeHotel, rocketmilesPage.emptyHotelInputMessage.getText());
+        Assert.assertEquals("Hotel message verification failure", expNoticeHotel, rocketmilesPage.emptyHotelInputMessage.getText());
     }
 
     @Then("^User will get reward box message$")
@@ -108,7 +123,6 @@ public class SearchStepDef {
         String expNoticeHotel = "Unknown location. Please type the city name again slowly and wait for the drop down options, or double-check the spelling.";
         Assert.assertEquals("Empty hotel verification failure", expNoticeHotel, rocketmilesPage.emptyHotelInputMessage.getText());
     }
-
 
     public void closeDateGuestRoom() throws InterruptedException {
         rocketmilesPage.okButton.click();
@@ -132,4 +146,38 @@ public class SearchStepDef {
             }
         }
     }
+
+    public void slider(int x) {
+        WebElement slider = searchResultPage.slider;
+        int width = slider.getSize().getWidth();
+        move.moveToElement(slider, ((width * x) / 100), 0).click();
+        move.build().perform();
+    }
+
+    public boolean isInThatRange(WebElement min, WebElement max, List<WebElement> list) {
+        List<Integer> listIntPrice = new ArrayList<>();
+        Integer minInt = Integer.valueOf(min.getText().substring(1, 3));
+        Integer maxInt = Integer.valueOf(max.getText().substring(1, 4));
+        for (WebElement element : list) {
+            listIntPrice.add(Integer.valueOf(element.getText()));
+        }
+        System.out.println("MinInt: "+ minInt);
+        System.out.println("MaxInt: " + maxInt);
+        System.out.println("Max: " + max);
+        System.out.println("Min: " + min);
+
+        for (int i = 0; i < listIntPrice.size(); i++) {
+            if (listIntPrice.get(i) >= minInt && listIntPrice.get(i) <= maxInt) {
+                return true;
+            }
+        }
+        System.out.println("GET0:" + listIntPrice.get(0));
+        System.out.println("GET1:" + listIntPrice.get(1));
+        System.out.println("GET2:" + listIntPrice.get(2));
+
+        return false;
+    }
 }
+
+
+
