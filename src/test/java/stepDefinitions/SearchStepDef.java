@@ -68,11 +68,10 @@ public class SearchStepDef {
     }
 
     @When("^User select up to \"([^\"]*)\" with \"([^\"]*)\"$")
-    public void user_select_up_to_with(String maxPrice, String sliderPercentage) throws InterruptedException {
+    public void user_select_up_to_with(String maxPrice, String sliderPercentage)  {
         int sliderInt = Integer.parseInt(sliderPercentage);
         wait.until(ExpectedConditions.elementToBeClickable(searchResultPage.slider));
         slider(sliderInt);
-        Thread.sleep(6000);
     }
 
     @Then("^User will see only that up to \"([^\"]*)\" range$")
@@ -161,20 +160,12 @@ public class SearchStepDef {
         for (WebElement element : list) {
             listIntPrice.add(Integer.valueOf(element.getText()));
         }
-        System.out.println("MinInt: "+ minInt);
-        System.out.println("MaxInt: " + maxInt);
-        System.out.println("Max: " + max);
-        System.out.println("Min: " + min);
 
         for (int i = 0; i < listIntPrice.size(); i++) {
             if (listIntPrice.get(i) >= minInt && listIntPrice.get(i) <= maxInt) {
                 return true;
             }
         }
-        System.out.println("GET0:" + listIntPrice.get(0));
-        System.out.println("GET1:" + listIntPrice.get(1));
-        System.out.println("GET2:" + listIntPrice.get(2));
-
         return false;
     }
 }
