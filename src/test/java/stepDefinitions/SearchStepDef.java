@@ -1,7 +1,7 @@
 package stepDefinitions;
 
-import Pages.RocketmilesPage;
-import Pages.SearchResultPage;
+import pages.RocketmilesPage;
+import pages.SearchResultPage;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -12,13 +12,11 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.SourceType;
 import org.openqa.selenium.support.ui.*;
 import utilities.Configuration;
 import utilities.Driver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 
 import java.util.ArrayList;
 import java.util.List;
